@@ -1083,8 +1083,7 @@ void WebContents::LoadURL(const GURL& url, const mate::Dictionary& options) {
   // created after loading a page.
   const auto view = web_contents()->GetRenderWidgetHostView();
   if (view) {
-    WebContentsPreferences* web_preferences =
-        WebContentsPreferences::FromWebContents(web_contents());
+    auto* web_preferences = WebContentsPreferences::From(web_contents());
     std::string color_name;
     if (web_preferences->dict()->GetString(options::kBackgroundColor,
                                            &color_name)) {
@@ -1785,8 +1784,7 @@ void WebContents::OnGetZoomLevel(IPC::Message* reply_msg) {
 }
 
 v8::Local<v8::Value> WebContents::GetWebPreferences(v8::Isolate* isolate) {
-  WebContentsPreferences* web_preferences =
-      WebContentsPreferences::FromWebContents(web_contents());
+  auto* web_preferences = WebContentsPreferences::From(web_contents());
   return mate::ConvertToV8(isolate, *web_preferences->dict());
 }
 
