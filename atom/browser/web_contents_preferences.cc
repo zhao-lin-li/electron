@@ -56,6 +56,13 @@ WebContentsPreferences::~WebContentsPreferences() {
       instances_.end());
 }
 
+bool WebContentsPreferences::IsEnabled(const base::StringPiece& name,
+                                       bool default_value) {
+  bool bool_value = default_value;
+  dict_.GetBoolean(name, &bool_value);
+  return bool_value;
+}
+
 void WebContentsPreferences::Merge(const base::DictionaryValue& extend) {
   dict_.MergeDictionary(&extend);
 }
@@ -77,6 +84,11 @@ WebContentsPreferences* WebContentsPreferences::From(
   if (!web_contents)
     return nullptr;
   return FromWebContents(web_contents);
+}
+
+// static
+WebContentsPreferences* WebContentsPreferences::From(int process_id) {
+  return From(GetWebContentsFromProcessID(process_id));
 }
 
 // static
@@ -232,23 +244,6 @@ void WebContentsPreferences::AppendExtraCommandLineSwitches(
   }
 }
 
-bool WebContentsPreferences::IsPreferenceEnabled(
-    const std::string& attribute_name,
-    content::WebContents* web_contents) {
-  WebContentsPreferences* self;
-  if (!web_contents)
-    return false;
-
-  self = FromWebContents(web_contents);
-  if (!self)
-    return false;
-
-  base::DictionaryValue& web_preferences = self->dict_;
-  bool bool_value = false;
-  web_preferences.GetBoolean(attribute_name, &bool_value);
-  return bool_value;
-}
-
 // static
 void WebContentsPreferences::OverrideWebkitPrefs(
     content::WebContents* web_contents, content::WebPreferences* prefs) {
@@ -310,15 +305,6 @@ bool WebContentsPreferences::GetInteger(const std::string& attributeName,
     return base::StringToInt(stringValue, intValue);
 
   return false;
-}
-
-bool WebContentsPreferences::GetString(const std::string& attribute_name,
-                                       std::string* string_value,
-                                       content::WebContents* web_contents) {
-  WebContentsPreferences* self = FromWebContents(web_contents);
-  if (!self)
-    return false;
-  return self->dict()->GetString(attribute_name, string_value);
 }
 
 }  // namespace atom
