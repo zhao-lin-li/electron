@@ -52,11 +52,12 @@ class WebContentsPreferences
                          const mate::Dictionary& web_preferences);
   ~WebContentsPreferences() override;
 
-  // $.extend(|web_preferences_|, |new_web_preferences|).
+  // $.extend(|web_preferences|, |new_web_preferences|).
   void Merge(const base::DictionaryValue& new_web_preferences);
 
   // Returns the web preferences.
-  base::DictionaryValue* web_preferences() { return &web_preferences_; }
+  base::DictionaryValue* dict() { return &dict_; }
+  const base::DictionaryValue* dict() const { return &dict_; }
 
  private:
   friend class content::WebContentsUserData<WebContentsPreferences>;
@@ -67,7 +68,7 @@ class WebContentsPreferences
   static std::vector<WebContentsPreferences*> instances_;
 
   content::WebContents* web_contents_;
-  base::DictionaryValue web_preferences_;
+  base::DictionaryValue dict_;
 
   DISALLOW_COPY_AND_ASSIGN(WebContentsPreferences);
 };
