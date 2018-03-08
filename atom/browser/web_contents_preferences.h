@@ -29,10 +29,6 @@ namespace atom {
 class WebContentsPreferences
     : public content::WebContentsUserData<WebContentsPreferences> {
  public:
-  // Get WebContents according to process ID.
-  // FIXME(zcbenz): This method does not belong here.
-  static content::WebContents* GetWebContentsFromProcessID(int process_id);
-
   // Get self from WebContents.
   static WebContentsPreferences* From(content::WebContents* web_contents);
   // Get self from procese ID.
@@ -62,6 +58,10 @@ class WebContentsPreferences
 
  private:
   friend class content::WebContentsUserData<WebContentsPreferences>;
+  friend class AtomBrowserClient;
+
+  // Get WebContents according to process ID.
+  static content::WebContents* GetWebContentsFromProcessID(int process_id);
 
   // Get preferences value as integer possibly coercing it from a string
   bool GetInteger(const std::string& attributeName, int* intValue);
